@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import logging
-import numpy as np
+# import numpy as np # Removed for serverless deployment size limits
 from database.postgres_db import PostgresDB
 
 logger = logging.getLogger(__name__)
