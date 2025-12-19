@@ -1,10 +1,17 @@
 import os
-import asyncpg
 import logging
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
 
 logger = logging.getLogger(__name__)
+
+# Make asyncpg optional for lightweight demo deployment
+try:
+    import asyncpg
+    HAS_POSTGRES = True
+except ImportError:
+    HAS_POSTGRES = False
+    logger.warning("⚠️ asyncpg not installed. Running in Mock Mode only.")
 
 class PostgresDB:
     """
@@ -17,12 +24,15 @@ class PostgresDB:
     
     async def initialize(self):
         """Create connection pool"""
-        if self.db_url:
-            self.pool = await asyncpg.create_pool(self.db_url)
-            await self._create_tables()
-            logger.info("✓ Database initialized")
+        if self.db_url and HAS_POSTGRES:
+            try:
+                self.pool = await asyncpg.create_pool(self.db_url)
+                await self._create_tables()
+                logger.info("✓ Database initialized")
+            except Exception as e:
+                logger.error(f"DB Init Failed: {e}. Switching to Mock Mode.")
         else:
-            logger.warning("DATABASE_URL not set, running in memory-only mode")
+            logger.warning("DATABASE_URL not set or driver missing, running in memory-only mode")
     
     async def close(self):
         """Close connection pool"""
