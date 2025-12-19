@@ -1,6 +1,9 @@
 from datetime import datetime
 import logging
-from langchain.chat_models import ChatOpenAI
+try:
+    from langchain_openai import ChatOpenAI
+except ImportError:
+    from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 from database.pinecone_db import VectorDBWrapper
 

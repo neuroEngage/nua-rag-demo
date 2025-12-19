@@ -4,7 +4,10 @@ from datetime import datetime
 from typing import Dict, Any
 import asyncio
 
-from langchain.chat_models import ChatOpenAI
+try:
+    from langchain_openai import ChatOpenAI
+except ImportError:
+    from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 
 from .product_agent import ProductAgent
